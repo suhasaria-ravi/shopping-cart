@@ -1,0 +1,5 @@
+FROM java:8
+WORKDIR /
+ADD target/shopping-cart-order-0.0.1-SNAPSHOT.jar //
+EXPOSE 8003
+ENTRYPOINT [ "java", "-Dspring.profiles.active=dock","-jar", "/shopping-cart-order-0.0.1-SNAPSHOT.jar"]
