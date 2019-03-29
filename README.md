@@ -1,5 +1,5 @@
 # shopping-cart
-For running on windows
+For running on windows (ignore the docker files in this project, for docker refer the ms-shopping-cart repo)
 
 1. Run Maven and build all projects.
 2. Install and run Rabbit MQ.
