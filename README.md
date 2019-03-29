@@ -1,43 +1,59 @@
 # shopping-cart
+For running on windows
 
-----------------------
-DOCKER STEPS -- Link: https://hub.docker.com/r/ravisuhasaria/shopping-cart
+1. Run Maven and build all projects.
+2. Install and run Rabbit MQ.
+3. To run zipkin:
+
+set RABBIT_URI=amqp://localhost
+java -jar zipkin.jar                           
+
+4. Run each applicaiton as java app.
+
+5. Run the BDD app for testing results.
+
+----------------------------
+Validation URLs:
+----------------------------
+
+Zipkin:
+http://192.168.99.100:9411/zipkin/
+
+Rabbit MQ:
+http://192.168.99.100:15672/
+
+Eureka:
+http://192.168.99.100:8761
+
 -----------------------
-
-Please put value for RABBIT_MQ_HOST and DOCKER_HOST which ever is sutiable.
-
-1.>Create Network:
-
-docker network create sc_net
-
-2.>RUN Docker Zipkin:
-
-docker run -ti -d --network sc_net   --name inst-sc-zipkin -p 9411:9411 -d sc-zipkin 
-
-Validate URL: http://192.168.99.100:9411/zipkin/
+Rest APIs:
+------------------------
 
 
 
-3.>RUN Docker RabbitMQ:
+GET: http://localhost:8001/shopping-cart/customers
 
-docker run -d --network sc_net   --name sc-rabbit -p 5672:5672 -p 15672:15672 -e RABBIT_URI=amqp://192.168.99.100  rabbitmq:3-management
+GET: http://localhost:8002/shopping-cart/items
 
-Validate URL: http://192.168.99.100:15672/
-
-4.>RUN Netflix-Eureka:
-
-docker run -ti -d --network sc_net  --name inst-sc-netf-eurk -p 5672 -p 15672 -p 8761:8761 -e "RABBIT_MQ_HOST=192.168.99.100"  -e "DOCKER_HOST=192.168.99.100" -e "RABBIT_URI=amqp://192.168.99.100" --link sc-rabbit  -d sc-netf-eurk
-
-Validate URL: http://192.168.99.100:15672/
-
-#5.>RUN Customer-MS:
-
-docker run -ti -d --network sc_net   --name inst-sc-customer -p 5672 -p 15672 -p 8761 -p 8001:8001  -e "RABBIT_MQ_HOST=192.168.99.100"  -e "DOCKER_HOST=192.168.99.100" --link sc-netf-eurk  -d sc-customer
-
-docker run -ti -d --network sc_net   --name inst-sc-item -p 5672 -p 15672 -p 8761 -p 8002:8002      -e "RABBIT_MQ_HOST=192.168.99.100"  -e "DOCKER_HOST=192.168.99.100" --link sc-netf-eurk  -d sc-item
-
-docker run -ti -d --network sc_net   --name inst-sc-order -p 5672 -p 15672 -p 8761 -p 8003:8003     -e "RABBIT_MQ_HOST=192.168.99.100"  -e "DOCKER_HOST=192.168.99.100" --link sc-netf-eurk  -d sc-order
+GET: http://localhost:8003/shopping-cart/orders
 
 
+POST: http://localhost:8003/shopping-cart/order-for-existing-customer
+With body as example:
 
+{
+    "custId": 1,
+    "itemSku": 1,
+    "ordQuantity": 1
+}
+
+
+POST: http://localhost:8003/shopping-cart/order-for-new-customer
+With body as example:
+{
+    "fname": "FistName",
+    "lname": "LastName",
+    "itemSku": 2,
+    "ordQuantity": 2
+}
 
